@@ -142,7 +142,7 @@ various [configuration options](https://docs.spring.io/spring-boot/docs/current/
 
 Let's define our Shopping List schema using flyway migration scripts, the first script is provided:
 
-Location: ``src/main/resources/db/migration/V0.1__Add_Shopping_List_Table.sql``
+Location: ``src/main/resources/db/migration/V0.2__Add_Shopping_List_Table.sql``
 
 Content:
 
