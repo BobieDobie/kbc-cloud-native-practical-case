@@ -1,47 +1,38 @@
 package com.ezgroceries.shoppinglist.controllers;
 
+import com.ezgroceries.shoppinglist.entities.CocktailEntity;
+import com.ezgroceries.shoppinglist.entities.ShoppingListEntity;
 import com.ezgroceries.shoppinglist.models.Cocktail;
-import com.ezgroceries.shoppinglist.models.ShoppingList;
+import com.ezgroceries.shoppinglist.services.ShoppingListService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class ShoppingListController {
+    private final ShoppingListService shoppingListService;
+
+    public ShoppingListController(ShoppingListService shoppingListService) {
+        this.shoppingListService = shoppingListService;
+    }
 
     @GetMapping("/shopping-lists")
-    public String getAllLists() {
-        return "[\n" +
-                "  {\n" +
-                "    \"shoppingListId\": \"4ba92a46-1d1b-4e52-8e38-13cd56c7224c\",\n" +
-                "    \"name\": \"Stephanie's birthday\",\n" +
-                "    \"ingredients\": [\n" +
-                "      \"Tequila\",\n" +
-                "      \"Triple sec\",\n" +
-                "      \"Lime juice\",\n" +
-                "      \"Salt\",\n" +
-                "      \"Blue Curacao\"\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"shoppingListId\": \"6c7d09c2-8a25-4d54-a979-25ae779d2465\",\n" +
-                "    \"name\": \"My Birthday\",\n" +
-                "    \"ingredients\": [\n" +
-                "      \"Tequila\",\n" +
-                "      \"Triple sec\",\n" +
-                "      \"Lime juice\",\n" +
-                "      \"Salt\",\n" +
-                "      \"Blue Curacao\"\n" +
-                "    ]\n" +
-                "  }\n" +
-                "]";
+    @JsonView(ShoppingListEntity.ShoppingView.class)
+    public List<ShoppingListEntity> getAllLists() {
+        return shoppingListService.getAllLists();
     }
 
     @PostMapping("/shopping-lists")
-    public ResponseEntity<Void> addList(@RequestBody ShoppingList shoppingList) {
+    public ResponseEntity<Void> addList(@RequestBody ShoppingListEntity shoppingList) {
 
+        shoppingListService.create(shoppingList);
+
+        // location of created object
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{name}")
                 .buildAndExpand(shoppingList.getName())
@@ -53,26 +44,19 @@ public class ShoppingListController {
     }
 
     @GetMapping("/shopping-lists/{shoppingListId}")
-    public String getShoppingList(@PathVariable String shoppingListId) {
-        return "{\n" +
-                "  \"shoppingListId\": \"90689338-499a-4c49-af90-f1e73068ad4f\",\n" +
-                "  \"name\": \"Stephanie's birthday\",\n" +
-                "  \"ingredients\": [\n" +
-                "    \"Tequila\",\n" +
-                "    \"Triple sec\",\n" +
-                "    \"Lime juice\",\n" +
-                "    \"Salt\",\n" +
-                "    \"Blue Curacao\"\n" +
-                "  ]\n" +
-                "}";
+    public ShoppingListEntity getShoppingList(@PathVariable UUID shoppingListId) {
+        return shoppingListService.getShoppingList(shoppingListId);
     }
 
     @PostMapping("/shopping-lists/{shoppingListId}/cocktails")
-    public ResponseEntity<Void> addCocktailToList(@PathVariable String shoppingListId, @RequestBody Cocktail cocktail) {
+    public ResponseEntity<Void> addCocktailToList(@PathVariable UUID shoppingListId, @RequestBody CocktailEntity cocktail) {
 
+        shoppingListService.addCocktailToList(shoppingListId, cocktail);
+
+        // location of new resource
         URI loc = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}")
-                .buildAndExpand(cocktail.getCocktailId())
+                .buildAndExpand(cocktail.getId())
                 .toUri();
 
         return ResponseEntity

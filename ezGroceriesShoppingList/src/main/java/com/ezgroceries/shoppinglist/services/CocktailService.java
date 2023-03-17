@@ -21,7 +21,7 @@ public class CocktailService {
     }
 
     public List<CocktailEntity> allCocktails(String search) {
-        // 1) get cocktails from feign
+        // 1) get drinks from feign
         CocktailDBResponse dbResponse = cocktailClient.searchCocktails(search);
         List<CocktailDBResponse.DrinkResource> drinks = dbResponse.getDrinks();
         // 2) make them cocktailEntities

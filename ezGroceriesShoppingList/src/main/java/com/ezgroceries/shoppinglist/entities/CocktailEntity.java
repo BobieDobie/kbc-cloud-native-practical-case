@@ -18,6 +18,9 @@ public class CocktailEntity {
     @Convert(converter = StringSetConverter.class)
     private Set<String> ingredients;
 
+    @ManyToMany(mappedBy = "cocktails")
+    Set<ShoppingListEntity> shoppingLists;
+
     public CocktailEntity() {}
 
     public UUID getId() {
