@@ -61,7 +61,7 @@ public class ShoppingListConverter extends AbstractHttpMessageConverter<Shopping
             String body = "{\n" +
                             "  \"id\":\"" + shoppingList.getId() + "\",\n" +
                             "  \"name\":\"" + shoppingList.getName() + "\",\n" +
-                            "  \"ingredients\": [\n";
+                            "  \"ingredients\": [\n"; // would require [] if no cocktails in the list yet
             while (iterator.hasNext()) {
                 String ingredient = iterator.next();
                 if (iterator.hasNext()) {
