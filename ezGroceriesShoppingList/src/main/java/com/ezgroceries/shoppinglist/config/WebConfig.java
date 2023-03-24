@@ -2,7 +2,11 @@ package com.ezgroceries.shoppinglist.config;
 
 import com.ezgroceries.shoppinglist.entities.ShoppingListConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.catalina.connector.Connector;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -26,5 +30,16 @@ public class WebConfig implements WebMvcConfigurer {
 
         // default JSON <-> Object converter
         converters.add(new MappingJackson2HttpMessageConverter());
+    }
+
+    //Custom tomcat configuration, we add a connector that allows http traffic next to https
+    @Bean
+    public ServletWebServerFactory servletContainer(@Value("${server.http.port}") int httpPort){
+        Connector connector=new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+        connector.setPort(httpPort);
+
+        TomcatServletWebServerFactory tomcat=new TomcatServletWebServerFactory();
+        tomcat.addAdditionalTomcatConnectors(connector);
+        return tomcat;
     }
 }
