@@ -48,6 +48,9 @@ public class CocktailService {
         cocktail.setId(UUID.randomUUID());
         cocktail.setId_drink(drink.getIdDrink());
         cocktail.setName(drink.getStrDrink());
+        cocktail.setGlass(drink.getStrGlass());
+        cocktail.setInstructions(drink.getStrInstructions());
+        cocktail.setImageLink(drink.getStrDrinkThumb());
         // prepare ingredients
         Set<String> ingredients = new HashSet<>(); // for cocktail
         String[] strIngredients = new String[] {drink.getStrIngredient1(), drink.getStrIngredient2(), drink.getStrIngredient3(), // from drink
